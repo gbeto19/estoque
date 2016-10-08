@@ -1,24 +1,58 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
     <h:head>
+       
+       
         <title>Estoque</title>
+        <!-- Bootstrap -->
+         <h:outputStylesheet library="css" name="bootstrap.min.css"/>
     </h:head>
     <h:body>
-        <h1>Cadastro de Produtos</h1>
-        <h:form>
-            
-           <h:panelGrid columns="2">
-                Nome <h:inputText value="#{produtoService.produto.nome}"/>
-                Descrição <h:inputText value="#{produtoService.produto.descricao}"/>
-                Valor <h:inputText value="#{produtoService.produto.valor}"/>
-            </h:panelGrid>
-         
-       <h:commandButton value="Adicionar" action="#{produtoService.salvarProduto()}"/>
-      
-        </h:form>
-   
-  </h:body>
+             <h1>Itens cadastrados</h1>
+        <br></br>
+            <h:form>
+                <h:commandLink value="Novo Produto" action="formProduto"/>
+                
+                <h:dataTable class="table table-striped"  value="#{produtoService.produtos}" var="p" >
+
+                    <h:column>
+                        <f:facet name="header">Código</f:facet>
+                            #{p.id}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Nome</f:facet>
+                            #{p.nome}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Descrição</f:facet>
+                            #{p.descricao}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Valor</f:facet>
+                            #{p.valor}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Ações</f:facet>
+                        <h:commandLink value="Excluir" action="#{produtoService.excluir(p)}"/> ||
+                        <h:commandLink value="Atalizar" action="#{produtoService.capturarProduto(p)}"/>
+                    </h:column>
+
+                </h:dataTable>
+
+            </h:form>
+            <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+            <!-- Include all compiled plugins (below), or include individual files as needed -->
+            <script src="js/bootstrap.min.js"></script>
+
+    </h:body>
 </html>
 
