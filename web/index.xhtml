@@ -6,15 +6,27 @@
 
     <h:head>
        
-       
         <title>Estoque</title>
         <!-- Bootstrap -->
          <h:outputStylesheet library="css" name="bootstrap.min.css"/>
     </h:head>
     <h:body>
-             <h1>Itens cadastrados</h1>
-        <br></br>
-            <h:form>
+       
+      
+       <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">
+          Produtos
+        <img alt="Brand" src="..."/>
+      </a>
+    </div>
+  </div>
+</nav> 
+             
+       
+        <div class="container" >
+        <h:form class="form-group">
                 <h:commandLink value="Novo Produto" action="formProduto"/>
                 
                 <h:dataTable class="table table-striped"  value="#{produtoService.produtos}" var="p" >
@@ -48,6 +60,9 @@
                 </h:dataTable>
 
             </h:form>
+        
+        </div>
+       
             <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
             <!-- Include all compiled plugins (below), or include individual files as needed -->

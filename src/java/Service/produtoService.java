@@ -5,19 +5,19 @@ import Util.HibernateUtil;
 import java.util.ArrayList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.SessionScoped;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-@ViewScoped // Mantem a sessao ativa para atualização
+@SessionScoped // Mantem a sessao ativa ate o navegador feche.
 @ManagedBean // faz o link desta classe com a classe de front ou index
 public class produtoService {
 
     private Produto produto = new Produto();
     private List<Produto> produtos = new ArrayList<>();
     private boolean atualiza = false;
-    
-       public produtoService() {
+
+    public produtoService() {
         listarProdutos();
     }
 
@@ -28,7 +28,7 @@ public class produtoService {
     }
 
     // METODO SALVAR PRODUTO
-    public void salvarProduto() {
+    public String salvarProduto() {
 
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction t = session.getTransaction();
@@ -37,13 +37,14 @@ public class produtoService {
             t.begin();
             session.save(produto);
             t.commit();
-
+            listarProdutos();
+            return "index";
         } catch (Exception e) {
 
         } finally {
             session.close();
         }
-
+        return null;
     }
 
     // METODO EXCLUIR PRODUTOS
@@ -63,14 +64,16 @@ public class produtoService {
         }
 
     }
+
     // METODO CAPTURAR PRODUTO 
-    public void capturarProduto(Produto p) {
+        public String capturarProduto(Produto p) {
         atualiza = true;
         produto = p;
+        return "formProduto";
     }
-    
+
     // METODO ATUALIZAR
-    public void atualizar() {
+    public String atualizar() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction t = session.getTransaction();
 
@@ -78,11 +81,14 @@ public class produtoService {
             t.begin();
             session.update(produto);
             t.commit();
+            produto = new Produto();
+            atualiza = false;
+            return "index";
         } catch (Exception e) {
         } finally {
             session.close();
         }
-
+        return null;
     }
 
     // METODOS GET/SET
