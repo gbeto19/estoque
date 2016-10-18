@@ -8,6 +8,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
 
 @SessionScoped // Mantem a sessao ativa ate o navegador feche.
 @ManagedBean // faz o link desta classe com a classe de front ou index
@@ -16,6 +17,7 @@ public class produtoService {
     private Produto produto = new Produto();
     private List<Produto> produtos = new ArrayList<>();
     private boolean atualiza = false;
+    private String fitro;
 
     public produtoService() {
         listarProdutos();
@@ -24,7 +26,7 @@ public class produtoService {
     // METODO LISTAR PRODUTOS
     public void listarProdutos() {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        produtos = session.createCriteria(Produto.class).list();
+        setProdutos((List<Produto>) session.createCriteria(Produto.class).list());
     }
 
     // METODO SALVAR PRODUTO
@@ -35,7 +37,7 @@ public class produtoService {
 
         try {
             t.begin();
-            session.save(produto);
+            session.save(getProduto());
             t.commit();
             listarProdutos();
             return "index";
@@ -66,9 +68,9 @@ public class produtoService {
     }
 
     // METODO CAPTURAR PRODUTO 
-        public String capturarProduto(Produto p) {
-        atualiza = true;
-        produto = p;
+    public String capturarProduto(Produto p) {
+        setAtualiza(true);
+        setProduto(p);
         return "formProduto";
     }
 
@@ -79,10 +81,10 @@ public class produtoService {
 
         try {
             t.begin();
-            session.update(produto);
+            session.update(getProduto());
             t.commit();
-            produto = new Produto();
-            atualiza = false;
+            setProduto(new Produto());
+            setAtualiza(false);
             return "index";
         } catch (Exception e) {
         } finally {
@@ -90,6 +92,16 @@ public class produtoService {
         }
         return null;
     }
+
+    // METODO BUSCAR POR NOME
+    public void buscarProduto() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        produtos = session.createCriteria(Produto.class).add(Restrictions.eq("nome",fitro)).list();
+        if (getProdutos().isEmpty()) {
+            listarProdutos();
+        }
+    }
+    // produtos = session.createCriteria(Produto.class).add(Restrictions.eq("nome",fitro)).list();
 
     // METODOS GET/SET
     public Produto getProduto() {
@@ -115,4 +127,13 @@ public class produtoService {
     public void setAtualiza(boolean atualiza) {
         this.atualiza = atualiza;
     }
+
+    public String getFitro() {
+        return fitro;
+    }
+
+    public void setFitro(String fitro) {
+        this.fitro = fitro;
+    }
+
 }
